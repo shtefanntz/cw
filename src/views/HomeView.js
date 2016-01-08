@@ -15,8 +15,12 @@ export class HomeView extends React.Component {
   static propTypes = {
     counter: React.PropTypes.number.isRequired,
     doubleAsync: React.PropTypes.func.isRequired,
+<<<<<<< HEAD
     increment: React.PropTypes.func.isRequired,
     viewForeignCurrency: React.PropTypes.func.isRequired
+=======
+    increment: React.PropTypes.func.isRequired
+>>>>>>> 6104786a14f09fa62654cfb4ce15ff2b0d4a5ec2
   }
 
   render () {
@@ -35,10 +39,13 @@ export class HomeView extends React.Component {
                 onClick={this.props.doubleAsync}>
           Double (Async)
         </button>
+<<<<<<< HEAD
         <button className='btn btn-default'
                 onClick={this.props.viewForeignCurrency}>
           View foreign currencies
         </button>
+=======
+>>>>>>> 6104786a14f09fa62654cfb4ce15ff2b0d4a5ec2
         <hr />
         <Link to='/about'>Go To About View</Link>
       </div>
