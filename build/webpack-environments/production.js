@@ -6,7 +6,6 @@ const debug = _debug('app:webpack:production')
 
 export default (webpackConfig) => {
   debug('Create configuration.')
-
   if (config.compiler_source_maps) {
     debug('Source maps enabled for production.')
     webpackConfig.devtool = 'source-map'
