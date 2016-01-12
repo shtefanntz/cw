@@ -23,7 +23,7 @@ export function fetchPosts (reddit) {
 }
 
 export const actions = {
-  viewForeignCurrency: fetchPosts
+  showRedditFeed: fetchPosts
 }
 
 export default handleActions({

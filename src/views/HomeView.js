@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { actions as counterActions } from '../redux/modules/counter'
-import { actions as currencyActions } from '../redux/modules/currencyViewer'
+import { actions as redditActions } from '../redux/modules/redditFeed'
 import styles from './HomeView.scss'
 
 // We define mapStateToProps where we'd normally use
@@ -17,7 +17,7 @@ export class HomeView extends React.Component {
     counter: React.PropTypes.number.isRequired,
     doubleAsync: React.PropTypes.func.isRequired,
     increment: React.PropTypes.func.isRequired,
-    viewForeignCurrency: React.PropTypes.func.isRequired
+    showRedditFeed: React.PropTypes.func.isRequired
   }
 
   render () {
@@ -37,7 +37,7 @@ export class HomeView extends React.Component {
           Double (Async)
         </button>
         <button className='btn btn-default'
-                onClick={this.props.viewForeignCurrency}>
+                onClick={this.props.showRedditFeed}>
           View foreign currencies
         </button>
         <hr />
@@ -46,5 +46,5 @@ export class HomeView extends React.Component {
     )
   }
 }
-var actions = Object.assign({}, counterActions, currencyActions)
+var actions = Object.assign({}, counterActions, redditActions)
 export default connect(mapStateToProps, actions)(HomeView)
