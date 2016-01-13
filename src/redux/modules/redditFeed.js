@@ -12,11 +12,13 @@ export const receiveRedditPosts = createAction(RECEIVE_POSTS,
     receivedAt: Date.now()
   }))
 
-export function fetchPosts (reddit) {
+export function fetchPosts (mouseEv, reddit) {
+  debugger
   return (dispatch, getState) => {
+    debugger
     console.log(getState())
-    dispatch(requestRedditPosts(reddit))
-    return fetch(`http://www.reddit.com/r/${reddit}.json`)
+    dispatch(requestRedditPosts('batman'))
+    return fetch(`http://www.reddit.com/r/batman.json`)
       .then(response => response.json())
       .then(json => dispatch(receiveRedditPosts(reddit, json)))
   }
@@ -28,15 +30,17 @@ export const actions = {
 
 export default handleActions({
   [REQUEST_POSTS]: (state = {isFetching: false, items: []}) => {
+    debugger
     return Object.assign({}, state, {
       isFetching: true
     })
   },
   [RECEIVE_POSTS]: (state = {isFetching: false, items: []}, {payload}) => {
+    debugger
     return Object.assign({}, state, {
       isFetching: false,
-      items: payload.items.posts,
+      items: payload.posts,
       lastUpdated: payload.receivedAt
     })
   }
-})
+}, {})

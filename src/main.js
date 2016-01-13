@@ -7,8 +7,7 @@ import configureStore from './redux/configureStore'
 const history = useBasename(createHistory)({
   basename: __BASENAME__
 })
- window.__INITIAL_STATE__ = {router:{}}
-debugger
+
 const store = configureStore(window.__INITIAL_STATE__)
 syncReduxAndRouter(history, store, (state) => state.router)
 
