@@ -18,7 +18,7 @@ export class HomeView extends React.Component {
     doubleAsync: React.PropTypes.func.isRequired,
     increment: React.PropTypes.func.isRequired,
     showRedditFeed: React.PropTypes.func.isRequired
-  }
+  };
 
   render () {
     return (
@@ -36,10 +36,11 @@ export class HomeView extends React.Component {
                 onClick={this.props.doubleAsync}>
           Double (Async)
         </button>
-        <button className='btn btn-default'
-                onClick={this.props.showRedditFeed}>
-          View foreign currencies
-        </button>
+        <Link className='btn btn-default'
+                onClick={this.props.showRedditFeed}
+                to='/reddit'>
+          View reddit feed
+        </Link>
         <hr />
         <Link to='/about'>Go To About View</Link>
       </div>

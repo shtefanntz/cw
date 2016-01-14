@@ -1,4 +1,4 @@
-import { Route, IndexRoute, Redirect } from 'react-router'
+import { Route, IndexRoute } from 'react-router'
 
 // NOTE: here we're making use of the `resolve.root` configuration
 // option in webpack, which allows us to specify import paths as if
@@ -8,12 +8,12 @@ import { Route, IndexRoute, Redirect } from 'react-router'
 import CoreLayout from 'layouts/CoreLayout'
 import HomeView from 'views/HomeView'
 import AboutView from 'views/AboutView'
+import RedditView from 'views/RedditView'
 
 export default (
   <Route path='/' component={CoreLayout}>
     <IndexRoute component={HomeView} />
-    <Route path='/about' component={AboutView} >
-      <Redirect from='/about/:_' to='/about' />
-    </Route>
+    <Route path='/about' component={AboutView} />
+    <Route path='/reddit' component={RedditView} />
   </Route>
 )
