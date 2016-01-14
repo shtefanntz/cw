@@ -17,8 +17,12 @@ export class HomeView extends React.Component {
     counter: React.PropTypes.number.isRequired,
     doubleAsync: React.PropTypes.func.isRequired,
     increment: React.PropTypes.func.isRequired,
-    showRedditFeed: React.PropTypes.func.isRequired
+    dispatch: React.PropTypes.func.isRequired
   };
+
+  increment() {
+    this.props.dispatch(redditActions.selectReddit)
+  }
 
   render () {
     return (
@@ -37,7 +41,7 @@ export class HomeView extends React.Component {
           Double (Async)
         </button>
         <Link className='btn btn-default'
-                onClick={this.props.showRedditFeed}
+              onClick={this.increment.bind(this)}
                 to='/reddit'>
           View reddit feed
         </Link>
@@ -47,5 +51,4 @@ export class HomeView extends React.Component {
     )
   }
 }
-var actions = Object.assign({}, counterActions, redditActions)
-export default connect(mapStateToProps, actions)(HomeView)
+export default connect(mapStateToProps, counterActions)(HomeView)
