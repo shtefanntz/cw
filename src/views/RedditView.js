@@ -1,11 +1,20 @@
 import React, {Component, PropTypes} from 'react'
 import { Link } from 'react-router'
 import {connect} from 'react-redux'
-import { actions } from '../redux/modules/redditFeed'
+import { actions, defaultReddits } from '../redux/modules/redditFeed'
 import Picker from '../components/Picker'
 import Posts from '../components/Posts'
 
 export class RedditView extends Component {
+  static propTypes = {
+    selectedReddit: PropTypes.string.isRequired,
+    posts: PropTypes.array.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    lastUpdated: PropTypes.number,
+    redditList: PropTypes.array.isRequired,
+    dispatch: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props)
     this.handleChange = this.handleChange.bind(this)
@@ -37,14 +46,13 @@ export class RedditView extends Component {
   }
 
   render () {
-    const { selectedReddit, posts, isFetching, lastUpdated } = this.props
-
+    const { selectedReddit, posts, isFetching, lastUpdated, redditList } = this.props
     return (
       <div>
-        <Link to='\'>Home</Link>
+        <Link to='/'>Home</Link>
         <Picker value={selectedReddit}
                 onChange={this.handleChange}
-                options={['reactjs', 'batman']}/>
+                options={ redditList }/>
         <p>
           {lastUpdated &&
             <span>
@@ -73,16 +81,8 @@ export class RedditView extends Component {
     )
   }
 }
-RedditView.propTypes = {
-  selectedReddit: PropTypes.string.isRequired,
-  posts: PropTypes.array.isRequired,
-  isFetching: PropTypes.bool.isRequired,
-  lastUpdated: PropTypes.number,
-  dispatch: PropTypes.func.isRequired
-}
 
 const mapStateToProps = (state) => {
-  debugger
   const { selectedReddit, postsByReddit } = state.redditFeed
   const {
     isFetching,
@@ -97,7 +97,8 @@ const mapStateToProps = (state) => {
     selectedReddit,
     posts,
     isFetching,
-    lastUpdated
+    lastUpdated,
+    redditList: defaultReddits
   }
 }
 

@@ -12,8 +12,8 @@ export const selectReddit = createAction(SELECT_REDDIT)
 export const invalidateReddit = createAction(INVALIDATE_REDDIT)
 export const receiveRedditPosts = createAction(RECEIVE_POSTS,
   (reddit, json) => ({
-    reddit,
-    posts: json.data.children.map(child => child.data),
+    reddit: reddit,
+    posts: (json.data.children || []).map(child => child.data),
     receivedAt: Date.now()
   }))
 
@@ -40,7 +40,7 @@ function shouldFetchPosts (state, reddit) {
 
 export function fetchPostsIfNeeded (reddit) {
   return (dispatch, getState) => {
-    if (shouldFetchPosts(getState(), reddit)) {
+    if (shouldFetchPosts(getState().redditFeed, reddit)) {
       return dispatch(fetchPosts(reddit))
     }
   }
@@ -50,93 +50,43 @@ export const actions = {
   selectReddit,
   invalidateReddit
 }
+export const defaultReddits = ['reactjs', 'batman']
 
-function posts (state = {
-  isFetching: false,
-  didInvalidate: false,
-  items: []
-}, action) {
-  switch (action.type) {
-    case INVALIDATE_REDDIT:
-      return Object.assign({}, state, {
-        didInvalidate: true
-      })
-    case REQUEST_POSTS:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false
-      })
-    case RECEIVE_POSTS:
-      return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        items: action.payload.posts,
-        lastUpdated: action.payload.receivedAt
-      })
-    default:
-      return state
+export default combineReducers(
+  {
+    selectedReddit: handleAction(SELECT_REDDIT, (state = '', {payload}) => {
+      return payload
+    }, defaultReddits[0]),
+    postsByReddit: handleActions({
+      [REQUEST_POSTS]: (state = {}, {payload}) => {
+        console.log(REQUEST_POSTS, payload)
+        return Object.assign({}, state, {
+          [payload]: Object.assign({}, state, {
+            isFetching: true,
+            didInvalidate: false,
+            items: []
+          })
+        })
+      },
+      [RECEIVE_POSTS]: (state = {}, {payload}) => {
+        console.log(RECEIVE_POSTS, payload)
+        return Object.assign({}, state, {
+          [payload.reddit]: Object.assign({}, state, {
+            isFetching: false,
+            didInvalidate: false,
+            items: payload.posts.map(({title, url}) => ({title, url})),
+            lastUpdated: payload.receivedAt
+          })
+        })
+      },
+      [INVALIDATE_REDDIT]: (state = {}, {payload}) => {
+        console.log(INVALIDATE_REDDIT, payload)
+        return Object.assign({}, state, {
+          [payload]: Object.assign({}, state, {
+            didInvalidate: true
+          })
+        })
+      }
+    }, {})
   }
-}
-
-//export default combineReducers(
-//  handleAction(SELECT_REDDIT, (state = 'handleActionSelectReddit', {payload}) => {
-//    debugger
-//    return payload.reddit
-//  }),
-//  handleActions({
-//    [REQUEST_POSTS]: (state = {}, action) => {
-//      debugger
-//      return Object.assign({}, state, {
-//        [action.payload.reddit]: posts(state[action.payload.reddit], action)
-//      })
-//    },
-//    [RECEIVE_POSTS]: (state = {}, action) => {
-//      debugger
-//      return Object.assign({}, state, {
-//        [action.payload.reddit]: posts(state[action.payload.reddit], action)
-//      })
-//    },
-//    [INVALIDATE_REDDIT]: (state = {}, action) => {
-//      debugger
-//      return Object.assign({}, state, {
-//        [action.payload.reddit]: posts(state[action.payload.reddit], action)
-//      })
-//    }
-//  }, {
-//    isFetching: false,
-//    didInvalidate: false,
-//    items: []
-//  })
-//)
-
-export default handleActions({
-  [SELECT_REDDIT]: (state = 'handleActionSelectReddit', {payload}) => {
-    debugger
-    return payload.reddit
-  },
-  [REQUEST_POSTS]: (state = {}, action) => {
-    debugger
-    return Object.assign({}, state, {
-      [action.payload.reddit]: posts(state[action.payload.reddit], action)
-    })
-  },
-  [RECEIVE_POSTS]: (state = {}, action) => {
-    debugger
-    return Object.assign({}, state, {
-      [action.payload.reddit]: posts(state[action.payload.reddit], action)
-    })
-  },
-  [INVALIDATE_REDDIT]: (state = {}, action) => {
-    debugger
-    return Object.assign({}, state, {
-      [action.payload.reddit]: posts(state[action.payload.reddit], action)
-    })
-  }
-}, {
-  isFetching: false,
-  didInvalidate: false,
-  items: [12],
-  postsByReddit: {},
-  selectedReddit: ''
-})
-
+)

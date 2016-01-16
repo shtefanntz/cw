@@ -1,5 +1,6 @@
-import { connect } from 'react-redux'
+import React, {Component, PropTypes} from 'react'
 import { Link } from 'react-router'
+import { connect } from 'react-redux'
 import { actions as counterActions } from '../redux/modules/counter'
 import { actions as redditActions } from '../redux/modules/redditFeed'
 import styles from './HomeView.scss'
@@ -10,18 +11,33 @@ import styles from './HomeView.scss'
 // the component can be tested w/ and w/o being connected.
 // See: http://rackt.github.io/redux/docs/recipes/WritingTests.html
 const mapStateToProps = (state) => ({
-  counter: state.counter
+  counter: state.counter,
+  doubleAsync: counterActions.doubleAsync,
+  increment: counterActions.increment
 })
-export class HomeView extends React.Component {
+export class HomeView extends Component {
   static propTypes = {
-    counter: React.PropTypes.number.isRequired,
-    doubleAsync: React.PropTypes.func.isRequired,
-    increment: React.PropTypes.func.isRequired,
-    dispatch: React.PropTypes.func.isRequired
+    counter: PropTypes.number.isRequired,
+    doubleAsync: PropTypes.func.isRequired,
+    increment: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired
   };
 
-  increment() {
+  constructor(props) {
+    super(props)
+    this.selectReddit = this.selectReddit.bind(this)
+    this.doubleAsync = this.doubleAsync.bind(this)
+  }
+
+  selectReddit() {
     this.props.dispatch(redditActions.selectReddit)
+  }
+
+  doubleAsync() {
+    this.props.dispatch(this.props.doubleAsync())
+  }
+  increment(number) {
+    this.props.dispatch(this.props.increment(number))
   }
 
   render () {
@@ -33,15 +49,15 @@ export class HomeView extends React.Component {
           <span className={styles['counter--green']}>{this.props.counter}</span>
         </h2>
         <button className='btn btn-default'
-                onClick={() => this.props.increment(1)}>
+                onClick={() => this.increment(1)}>
           Increment
         </button>
         <button className='btn btn-default'
-                onClick={this.props.doubleAsync}>
+                onClick={this.doubleAsync}>
           Double (Async)
         </button>
         <Link className='btn btn-default'
-              onClick={this.increment.bind(this)}
+              onClick={this.selectReddit}
                 to='/reddit'>
           View reddit feed
         </Link>
@@ -51,4 +67,4 @@ export class HomeView extends React.Component {
     )
   }
 }
-export default connect(mapStateToProps, counterActions)(HomeView)
+export default connect(mapStateToProps)(HomeView)
